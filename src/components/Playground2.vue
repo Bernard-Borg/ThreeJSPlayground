@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import *  as THREE from 'three';
-import { RingGeometry } from 'three';
 import { onMounted, ref } from 'vue';
 
-document.addEventListener('click', onClick, false); 
+document.addEventListener('click', onClick, false);
+window.addEventListener('resize', onWindowResize, false);
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 const ringInnerRadius = ref<number>(0.3);
 const ringOuterRadius = ref<number>(0.5);

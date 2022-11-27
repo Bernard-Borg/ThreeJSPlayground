@@ -4,6 +4,15 @@ import { onMounted, ref } from 'vue';
 
 document.addEventListener('mousemove', onDocumentMouseMove, false); 
 
+window.addEventListener('resize', onWindowResize, false);
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
 camera.position.z = 1;
 
