@@ -38,7 +38,7 @@ function animation(time: number, positionX: number, positionY: number) {
 const rotationX = ref<number>(0);
 const rotationY = ref<number>(0);
 
-let timeout: NodeJS.Timeout | null = null;
+let timeout: ReturnType<typeof setTimeout> | null = null;
 
 function onDocumentMouseMove(event: MouseEvent) {
     if (timeout != null) {

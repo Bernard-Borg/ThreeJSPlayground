@@ -5,22 +5,20 @@ import { ref } from "vue";
 
 const options = {
     "SpinningCircle": SpinningCircle,
-    "Playground2": Playground2
+    "Playground2": Playground2,
+    "Playground3": undefined
 }
 
 const optionsMap = new Map(Object.entries(options));
+const playgrounds = Object.keys(options);
 
 let timeout: ReturnType<typeof setTimeout> | null = null;
 const displayPlaygrounds = ref<boolean>(false);
-
-const pages = import.meta.glob("./components/*.vue");
-const playgrounds = Object.keys(pages).map(file => file.replace(".vue", "").replace("./components/", ""));
 
 const currentPlayground = ref<string>("SpinningCircle");
 
 function setCurrentPlayground(playground: string) {
     currentPlayground.value = playground;
-    console.log(currentPlayground.value);
 }
 
 function hidePlaygrounds() {
@@ -59,7 +57,7 @@ function clearTooltip() {
             <button id="playground-chooser" @mouseover="displayPlaygrounds = true" @mouseleave="hidePlaygrounds">Change Playground  <i class="fa-solid fa-angle-down"></i></button>
             <div id="playgrounds-options" v-if="displayPlaygrounds" @mouseover="clearHidePlaygroundsTimeout" @mouseleave="displayPlaygrounds = false">
                 <div v-for="playground in playgrounds">
-                    <button class="active-playground" v-if="optionsMap.has(playground)" @click="setCurrentPlayground(playground)">
+                    <button class="active-playground" v-if="optionsMap.has(playground) && optionsMap.get(playground)" @click="setCurrentPlayground(playground)">
                         {{ playground }}
                     </button>
                     <button class="unpublished-playground" v-else @mouseover="showTooltip" @mouseleave="clearTooltip" style="color: lightgrey">

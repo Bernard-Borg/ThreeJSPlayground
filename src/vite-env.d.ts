@@ -1,7 +1,4 @@
 /// <reference types="vite/client" />
-/// <reference types="node" />
-
-declare module "stats.js";
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
