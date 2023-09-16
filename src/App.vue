@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import SpinningCircle from "./components/SpinningCircle.vue";
+import SpinningSquare from "./components/SpinningSquare.vue";
 import Playground2 from "./components/Playground2.vue";
 import { ref } from "vue";
 import type { Component } from "vue";
 
 const options: Record<string, Component | undefined> = {
-    "SpinningCircle": SpinningCircle,
+    "SpinningSquare": SpinningSquare,
     "Playground2": Playground2,
     "Playground3": undefined
 }
@@ -16,7 +16,7 @@ const playgrounds = Object.keys(options);
 let timeout: ReturnType<typeof setTimeout> | null = null;
 const displayPlaygrounds = ref<boolean>(false);
 
-const currentPlayground = ref<string>("SpinningCircle");
+const currentPlayground = ref<string>("SpinningSquare");
 
 function setCurrentPlayground(playground: string) {
     currentPlayground.value = playground;
