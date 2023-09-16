@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import SpinningCircle from "./components/SpinningCircle.vue";
 import Playground2 from "./components/Playground2.vue";
-import { Component, ref } from "vue";
+import { ref } from "vue";
+import type { Component } from "vue";
 
 const options: Record<string, Component | undefined> = {
     "SpinningCircle": SpinningCircle,
