@@ -5,7 +5,7 @@ import { ref } from "vue";
 import type { Component } from "vue";
 
 const options: Record<string, Component | undefined> = {
-    "SpinningSquare": SpinningSquare,
+    "Spinning Square": SpinningSquare,
     "Playground2": Playground2,
     "Playground3": undefined
 }

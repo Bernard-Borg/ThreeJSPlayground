@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import *  as THREE from 'three';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useMouse, watchDebounced } from "@vueuse/core";
+import { watch } from "fs";
 
-document.addEventListener('mousemove', onDocumentMouseMove, false); 
+const { x, y } = useMouse();
 
-window.addEventListener('resize', onWindowResize, false);
+const addMeshToScene = (scene: THREE.Scene, geometry: THREE.BufferGeometry, material: THREE.Material) => { 
+    const axesHelper = new THREE.AxesHelper( 1 );
+    scene.add( axesHelper );
 
-function onWindowResize(){
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+    return mesh;
+}
 
+const renderScene = () => {
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setAnimationLoop(animation);
+    return renderer;
 }
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
@@ -19,62 +28,51 @@ camera.position.z = 1;
 const scene = new THREE.Scene();
 const renderer = renderScene();
 
-//Add meshes
-const boxMesh = addMeshToScene(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshNormalMaterial());
+const boxMesh = addMeshToScene(scene, new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshNormalMaterial());
+
+const onWindowResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 onMounted(() => {
     document.getElementById("playground")?.appendChild(renderer.domElement);
+    window.addEventListener('resize', onWindowResize, false);
 });
 
-let previousTime = 0;
-let previousBoxMeshRotationX = 0;
-let previousBoxMeshRotationY = 0;
+onUnmounted(() => {
+    window.removeEventListener('resize', onWindowResize, false);
+});
 
-function animation(time: number, positionX: number, positionY: number) {
-	boxMesh.rotation.x = time / (positionX + 1);
-	boxMesh.rotation.y = time / (positionY + 1);
+// const rotationX = ref<number>(0);
+// const rotationY = ref<number>(0);
 
-    rotationX.value = Math.round(Math.abs(boxMesh.rotation.x - previousBoxMeshRotationX) / Math.abs(time / 1000 - previousTime / 1000) * 100) / 100;
-    rotationY.value = Math.round(Math.abs(boxMesh.rotation.y - previousBoxMeshRotationY) / Math.abs(time / 1000 - previousTime / 1000) * 100) / 100;
+// let previousTime = 0;
+// let previousBoxMeshRotationX = 0;
+// let previousBoxMeshRotationY = 0;
+
+function animation(time: number) {
+    const speed = 0.03;
+	// boxMesh.rotation.x = time / (x.value + 1);
+	// boxMesh.rotation.y = time / (y.value + 1);
+	// boxMesh.rotation.z = time / (1 + 1);
+
+    // const centreX = window.innerWidth / 2;
+    // const centerY = window.innerHeight / 2;
+
+    boxMesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), speed);
 
 	renderer.render(scene, camera);
-
-    previousTime = time;
-    previousBoxMeshRotationX = boxMesh.rotation.x;
-    previousBoxMeshRotationY = boxMesh.rotation.y;
 }
 
-const rotationX = ref<number>(0);
-const rotationY = ref<number>(0);
-
-let timeout: ReturnType<typeof setTimeout> | null = null;
-
-function onDocumentMouseMove(event: MouseEvent) {
-    if (timeout != null) {
-        clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(() => {
-        renderer.setAnimationLoop((time) => animation(time, event.pageX, event.pageY));
-    }, 50);
-}
-
-function addMeshToScene(geometry: THREE.BufferGeometry, material: THREE.Material) { 
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    return mesh;
-}
-
-function renderScene() {
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setAnimationLoop((time) => animation(time, 2000, 2000));
-    return renderer;
-}
+watchDebounced([x, y], (newValue) => {
+    boxMesh.rotateZ(0.785398);
+}, { debounce: 150 });
 </script>
 
 <template>
-    <span id="currentRotation">Rotation X: {{rotationX}}, Rotation Y: {{rotationY}}</span>
+    <span id="currentRotation">Rotation X: {{x}}, Rotation Y: {{y}}</span>
     <div id="playground">
     </div>
 </template>
