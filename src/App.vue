@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SpinningCircle from "./components/SpinningCircle.vue";
 import Playground2 from "./components/Playground2.vue";
-import { ref } from "vue";
+import { Component, ref } from "vue";
 
-const options = {
+const options: Record<string, Component | undefined> = {
     "SpinningCircle": SpinningCircle,
     "Playground2": Playground2,
     "Playground3": undefined
